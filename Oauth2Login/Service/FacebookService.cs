@@ -44,9 +44,12 @@ namespace Oauth2Login.Service
                 "code", code
             );
 
-            string resonseJson = HttpPost(tokenUrl, postData);
-            resonseJson = "{\"" + resonseJson.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
-            return JsonConvert.DeserializeAnonymousType(resonseJson, new { access_token = "" }).access_token;
+            string responseJson = HttpPost(tokenUrl, postData);
+            responseJson = responseJson.Replace("=", "\":\"").Replace("&", "\",\"");
+
+            if (responseJson.Substring(0, 1) != "{")
+                responseJson = "{\"" + responseJson + "\"}";
+            return JsonConvert.DeserializeAnonymousType(responseJson, new { access_token = "" }).access_token;
         }
 
         public override void RequestUserProfile()
